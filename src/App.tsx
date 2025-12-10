@@ -11,7 +11,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
-import Workout from "./pages/Workout";
+import Workout from "./pages/Workout/Workout";
 
 function Logout() {
   localStorage.clear();
