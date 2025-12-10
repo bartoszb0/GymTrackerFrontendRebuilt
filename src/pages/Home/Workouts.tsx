@@ -17,7 +17,6 @@ export default function Workouts() {
         mb="sm"
         mt="sm"
         key={workout.id}
-        onClick={() => console.log(workout.id)}
         component={Link}
         to={`workout/${workout.id}`}
       >
