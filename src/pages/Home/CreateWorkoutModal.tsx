@@ -41,6 +41,7 @@ export default function CreateWorkoutModal() {
       }
       setError("root", error);
     },
+    // TODO manually invalidate query with proper id actually, so I need to take response data
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       close();
@@ -64,41 +65,48 @@ export default function CreateWorkoutModal() {
     mutate(data);
   };
 
-  function openModal() {
+  const openModal = () => {
     clearErrors("root");
     clearErrors("name");
     reset();
     open();
-  }
+  };
+
+  const closeModal = () => {
+    if (!isPending) {
+      close();
+    }
+  };
 
   return (
     <>
       <Modal
         opened={opened}
-        onClose={close}
+        onClose={closeModal}
         withCloseButton={false}
         yOffset="30vh"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <fieldset
+          <TextInput
+            {...register("name")}
+            size="xl"
+            label="Workout Name"
+            placeholder="e.g. Legs"
+            error={(errors.name && errors.name.message) || errors.root?.message}
+            autoComplete="off"
             disabled={isPending}
-            style={{ border: "none", padding: 0, margin: 0 }}
-          >
-            <TextInput
-              {...register("name")}
-              size="xl"
-              label="Workout Name"
-              placeholder="e.g. Legs"
-              error={
-                (errors.name && errors.name.message) || errors.root?.message
-              }
-              autoComplete="off"
-            />
+          />
 
-            <Button size="xl" type="submit" bg="green.9" fullWidth mt="lg">
-              Create
-            </Button>
-          </fieldset>
+          <Button
+            size="xl"
+            type="submit"
+            bg="green.9"
+            fullWidth
+            mt="lg"
+            loading={isPending}
+          >
+            Create
+          </Button>
         </form>
       </Modal>
       <Button size="xl" onClick={() => openModal()}>
