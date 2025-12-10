@@ -1,3 +1,4 @@
+import { Card, ScrollArea, SimpleGrid, Text } from "@mantine/core";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import NotFoundArray from "../../components/NotFoundArray";
 import type { Workout } from "../../types/types";
@@ -9,16 +10,29 @@ export default function Workouts() {
     queryFn: () => api.get("workouts/").then((res) => res.data),
   });
 
-  console.log(workouts);
+  const workoutsElement = workouts.map((workout) => {
+    return (
+      <Card
+        mb="sm"
+        mt="sm"
+        key={workout.id}
+        onClick={() => console.log(workout.id)}
+      >
+        <Text size="35px" m="3px">
+          {workout.name}
+        </Text>
+      </Card>
+    );
+  });
 
   return (
     <>
       {workouts.length <= 0 ? (
         <NotFoundArray arrayName="workout" />
       ) : (
-        workouts.map((workout) => {
-          return <h1>{workout.name}</h1>;
-        })
+        <SimpleGrid cols={1}>
+          <ScrollArea mah="60vh">{workoutsElement}</ScrollArea>
+        </SimpleGrid>
       )}
     </>
   );
