@@ -37,7 +37,7 @@ export default function CreateWorkoutModal() {
     },
     onError: (error, _, context) => {
       if (context) {
-        queryClient.setQueryData(["workouts"], context?.previous);
+        queryClient.setQueryData(["workouts"], context.previous);
       }
       setError("root", error);
     },
