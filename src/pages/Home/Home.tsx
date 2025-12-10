@@ -1,17 +1,19 @@
 import { Stack, Text } from "@mantine/core";
 import DataContentWrapper from "../../components/DataContentWrapper";
 import CreateWorkoutModal from "./CreateWorkoutModal";
+import ProteinSection from "./ProteinSection";
 import Workouts from "./Workouts";
 
 export default function Home() {
   return (
     <Stack m="sm" mt="lg">
-      <Text size="45px" fw={600}>
+      <Text size="35px" fw={600}>
         All workouts
       </Text>
       <DataContentWrapper>
         <Workouts />
         <CreateWorkoutModal />
+        <ProteinSection />
       </DataContentWrapper>
     </Stack>
   );
