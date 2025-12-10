@@ -66,8 +66,7 @@ export default function CreateWorkoutModal() {
   };
 
   const openModal = () => {
-    clearErrors("root");
-    clearErrors("name");
+    clearErrors();
     reset();
     open();
   };
