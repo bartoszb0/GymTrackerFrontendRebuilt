@@ -20,6 +20,9 @@ export default function CreateWorkoutModal() {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: FormFields) => api.post("workouts/", data),
     onError: (error) => setError("root", error),
+    onSuccess: () => {
+      close();
+    },
   });
 
   type FormFields = z.infer<typeof schema>;
@@ -28,6 +31,8 @@ export default function CreateWorkoutModal() {
     register,
     handleSubmit,
     setError,
+    reset,
+    clearErrors,
     formState: { errors },
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
@@ -36,6 +41,13 @@ export default function CreateWorkoutModal() {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     mutate(data);
   };
+
+  function openModal() {
+    clearErrors("root");
+    clearErrors("name");
+    reset();
+    open();
+  }
 
   return (
     <>
@@ -67,7 +79,7 @@ export default function CreateWorkoutModal() {
           </fieldset>
         </form>
       </Modal>
-      <Button size="xl" onClick={open}>
+      <Button size="xl" onClick={() => openModal()}>
         Create new workout
       </Button>
     </>
