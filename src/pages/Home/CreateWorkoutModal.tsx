@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import type { Workout } from "../../types/types";
 import api from "../../utils/api";
 
 const schema = z.object({
@@ -17,10 +18,31 @@ const schema = z.object({
 export default function CreateWorkoutModal() {
   const [opened, { open, close }] = useDisclosure(false);
 
+  const queryClient = useQueryClient();
+
   const { mutate, isPending } = useMutation({
     mutationFn: (data: FormFields) => api.post("workouts/", data),
-    onError: (error) => setError("root", error),
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: ["workouts"] });
+
+      const previous = queryClient.getQueryData<Workout[]>(["workouts"]);
+
+      //TODO change ownerid to the one that'll be taken from jwt
+      queryClient.setQueryData<Workout[]>(
+        ["workouts"],
+        [...(previous ?? []), { id: Date.now(), name: data.name, owner: 29 }]
+      );
+
+      return { previous };
+    },
+    onError: (error, _, context) => {
+      if (context) {
+        queryClient.setQueryData(["workouts"], context?.previous);
+      }
+      setError("root", error);
+    },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
       close();
     },
   });
