@@ -1,11 +1,13 @@
 import {
   Button,
   Card,
+  Flex,
   ScrollArea,
   SimpleGrid,
   Stack,
   Text,
 } from "@mantine/core";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import NotFoundArray from "../../components/NotFoundArray";
 import type { Exercise } from "../../types/types";
@@ -35,10 +37,21 @@ export default function Exercises({
         key={exercise.id}
         onClick={() => console.log(exercise.id)}
       >
-        <Text size="35px" m="3px">
-          {exercise.name} - {exercise.sets}x{exercise.reps} - {exercise.weight}
-        </Text>
-        {isDeletingExercise && <Button bg="red.8">Delete</Button>}
+        <Flex justify="space-between" align="center">
+          <Text size="20px" m="3px">
+            {exercise.name} - {exercise.sets}x{exercise.reps} -{" "}
+            {exercise.weight}
+          </Text>
+          {isDeletingExercise ? (
+            <Button bg="red.8" size="md">
+              Delete
+            </Button>
+          ) : (
+            <Button size="md">
+              <PlayArrowIcon fontSize="large" />
+            </Button>
+          )}
+        </Flex>
       </Card>
     );
   });
@@ -52,16 +65,14 @@ export default function Exercises({
           <SimpleGrid cols={1}>
             <ScrollArea mah="60vh">{exercisesElement}</ScrollArea>
           </SimpleGrid>
-          {!isDeletingExercise && (
-            <>
-              <Button size="xl">Start workout</Button>
-              <Button size="xl" onClick={() => setIsDeletingExercise(true)}>
-                Delete exercise
-              </Button>
-            </>
-          )}
-          {isDeletingExercise && (
-            <Button onClick={() => setIsDeletingExercise(false)}>Done</Button>
+          {!isDeletingExercise ? (
+            <Button size="xl" onClick={() => setIsDeletingExercise(true)}>
+              Delete exercise
+            </Button>
+          ) : (
+            <Button size="xl" onClick={() => setIsDeletingExercise(false)}>
+              Done
+            </Button>
           )}
         </Stack>
       )}
