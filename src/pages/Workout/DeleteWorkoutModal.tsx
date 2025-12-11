@@ -6,16 +6,18 @@ import { toast } from "react-toastify";
 import api from "../../utils/api";
 
 type DeleteWorkoutModalProps = {
-  id: number;
+  workoutId: number;
 };
 
-export default function DeleteWorkoutModal({ id }: DeleteWorkoutModalProps) {
+export default function DeleteWorkoutModal({
+  workoutId,
+}: DeleteWorkoutModalProps) {
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => api.delete(`workouts/${id}/`),
+    mutationFn: () => api.delete(`workouts/${workoutId}/`),
     onError: (error) => toast.error(error.message),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
