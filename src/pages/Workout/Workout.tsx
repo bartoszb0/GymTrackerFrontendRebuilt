@@ -1,7 +1,8 @@
-import { Stack, Text } from "@mantine/core";
+import { Button, Flex, Stack, Text } from "@mantine/core";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import DataContentWrapper from "../../components/DataContentWrapper";
 import type { Workout } from "../../types/types";
 import isIdValid from "../../utils/isIdValid";
@@ -25,7 +26,14 @@ export default function Workout() {
 
   return (
     <Stack m="sm" mt="lg">
-      <Text>{workoutName}</Text>
+      <Flex gap="md" align="center">
+        <Button bg="dark.8" size="lg" component={Link} to="/">
+          <ArrowBackIcon fontSize="large" />
+        </Button>
+        <Text fw={700} size="30px">
+          {workoutName}
+        </Text>
+      </Flex>
       <DataContentWrapper>
         <Exercises
           id={safeId}
