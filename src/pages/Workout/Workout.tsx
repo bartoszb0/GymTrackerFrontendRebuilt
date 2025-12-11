@@ -36,14 +36,14 @@ export default function Workout() {
       </Flex>
       <DataContentWrapper>
         <Exercises
-          id={safeId}
+          workoutId={safeId}
           isDeletingExercise={isDeletingExercise}
           setIsDeletingExercise={setIsDeletingExercise}
         />
         {!isDeletingExercise && (
           <>
-            <NewExerciseModal id={safeId} />
-            <DeleteWorkoutModal id={safeId} />
+            <NewExerciseModal workoutId={safeId} />
+            <DeleteWorkoutModal workoutId={safeId} />
           </>
         )}
       </DataContentWrapper>
