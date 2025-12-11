@@ -81,6 +81,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
     onSuccess: () => {
       toast.success("Exercise created");
       queryClient.invalidateQueries({ queryKey: ["workout", workoutId] });
+      reset(); // crucial for avoiding rapidly clicking to create bunch of same exercise
       close();
     },
   });

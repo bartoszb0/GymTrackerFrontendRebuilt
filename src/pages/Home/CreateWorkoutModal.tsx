@@ -47,6 +47,7 @@ export default function CreateWorkoutModal() {
     onSuccess: () => {
       toast.success("Workout created");
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      reset(); // crucial for avoiding rapidly clicking to create bunch of same workout
       close();
     },
   });
