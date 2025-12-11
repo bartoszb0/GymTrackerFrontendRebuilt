@@ -44,7 +44,7 @@ export default function DeleteWorkoutModal({
         <Text ta="center" size="25px">
           Are you sure you want to delete this workout?
         </Text>
-        <Flex mt="xl" gap="sm">
+        <Flex mt="xl" gap="sm" justify="center">
           <Button
             size="xl"
             w={150}
