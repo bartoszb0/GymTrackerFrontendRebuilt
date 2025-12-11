@@ -1,9 +1,205 @@
-import { Button } from "@mantine/core";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Modal, NumberInput, Text, TextInput } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
+import type { Exercise } from "../../types/types";
+import api from "../../utils/api";
 
 type NewExerciseModalProps = {
-  id: number;
+  workoutId: number;
 };
 
-export default function NewExerciseModal({ id }: NewExerciseModalProps) {
-  return <Button size="xl">Add new exercise</Button>;
+const schema = z.object({
+  name: z
+    .string()
+    .min(1, "Exercise Name is required")
+    .max(30, "Exercise Name must be less than 30 characters")
+    .trim(),
+  sets: z.number("Number required").min(1, "Number must be positive"),
+  reps: z.number("Number required").min(1, "Number must be positive"),
+  weight: z
+    .number("Number required")
+    .min(0.01, "Number must be positive")
+    .optional(),
+});
+
+type FormFields = z.infer<typeof schema>;
+
+export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
+  const [opened, { open, close }] = useDisclosure(false);
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: FormFields) =>
+      api.post(`workouts/${workoutId}/exercises/`, data),
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: ["workout", workoutId] });
+
+      const previous = queryClient.getQueryData<Exercise[]>([
+        "workout",
+        workoutId,
+      ]);
+
+      const optimisticWeight = (() => {
+        if (data.weight === undefined) {
+          return "0.00";
+        }
+        return data.weight.toFixed(2);
+      })();
+
+      queryClient.setQueryData<Exercise[]>(
+        ["workout", workoutId],
+        [
+          ...(previous ?? []),
+          {
+            id: Date.now(),
+            name: data.name,
+            sets: data.sets,
+            reps: data.reps,
+            weight: optimisticWeight,
+          },
+        ]
+      );
+
+      return { previous };
+    },
+    onError: (error, _, context) => {
+      toast.error("Failed to create exercise");
+      if (context) {
+        queryClient.setQueryData<Exercise[]>(
+          ["workout", workoutId],
+          context.previous
+        );
+      }
+      setError("root", error);
+    },
+    // TODO manually invalidate query with proper id actually, so I need to take response data
+
+    onSuccess: () => {
+      toast.success("Exercise created");
+      queryClient.invalidateQueries({ queryKey: ["workout", workoutId] });
+      close();
+    },
+  });
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    clearErrors,
+    formState: { errors },
+  } = useForm<FormFields>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    mutate(data);
+  };
+
+  const closeModal = () => {
+    if (!isPending) {
+      close();
+    }
+  };
+
+  const openModal = () => {
+    clearErrors();
+    reset();
+    open();
+  };
+
+  return (
+    <>
+      <Modal
+        opened={opened}
+        onClose={closeModal}
+        yOffset="20vh"
+        withCloseButton={false}
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <fieldset
+            disabled={isPending}
+            style={{
+              border: "none",
+              padding: 0,
+              margin: 0,
+            }}
+          >
+            <TextInput
+              {...register("name")}
+              label="Exercise Name"
+              size="lg"
+              mt="sm"
+              error={errors.name && errors.name.message}
+              autoComplete="off"
+            ></TextInput>
+
+            <Controller
+              name="sets"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="Sets"
+                  size="lg"
+                  mt="sm"
+                  min={1}
+                  error={errors.sets && errors.sets.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="reps"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="Reps"
+                  size="lg"
+                  mt="sm"
+                  min={1}
+                  error={errors.reps && errors.reps.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="weight"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="Weight"
+                  description="Leave empty for bodyweight"
+                  size="lg"
+                  mt="sm"
+                  min={0.01}
+                  error={errors.weight && errors.weight.message}
+                />
+              )}
+            />
+          </fieldset>
+
+          {errors.root && (
+            <Text size="lg" mt="md" c="red.8">
+              {errors.root.message}
+            </Text>
+          )}
+
+          <Button type="submit" size="xl" mt="lg" fullWidth loading={isPending}>
+            Create Exercise
+          </Button>
+        </form>
+      </Modal>
+      <Button size="xl" onClick={() => openModal()}>
+        Add new exercise
+      </Button>
+    </>
+  );
 }
