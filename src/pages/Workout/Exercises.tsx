@@ -32,19 +32,20 @@ export default function Exercises({
   });
 
   const exercisesElement = exercises.map((exercise) => {
-    const isBodyWeight = exercise.weight == "0.00";
+    const isBodyweight = exercise.weight == "0.00";
 
     return (
       <Card mb="sm" mt="sm" key={exercise.id}>
         <Flex justify="space-between" align="center">
           <Text size="20px" m="3px">
-            {exercise.name} - {exercise.sets}x{exercise.reps} -
-            {!isBodyWeight ? exercise.weight + "kg" : "Bodyweight"}
+            {exercise.name} - {exercise.sets}x{exercise.reps} -{" "}
+            {!isBodyweight ? exercise.weight + "kg" : "Bodyweight"}
           </Text>
           {isDeletingExercise ? (
             <DeleteExerciseModal
               exerciseId={exercise.id}
               workoutId={workoutId}
+              setIsDeletingExercise={setIsDeletingExercise}
             />
           ) : (
             <Button size="md">
