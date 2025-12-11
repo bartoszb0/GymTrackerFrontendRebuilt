@@ -45,7 +45,7 @@ export default function CreateWorkoutModal() {
     },
     // TODO manually invalidate query with proper id actually, so I need to take response data
     onSuccess: () => {
-      toast.success("Workoit created");
+      toast.success("Workout created");
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       close();
     },
