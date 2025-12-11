@@ -3,6 +3,7 @@ import { Button, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import type { Workout } from "../../types/types";
 import api from "../../utils/api";
@@ -36,6 +37,7 @@ export default function CreateWorkoutModal() {
       return { previous };
     },
     onError: (error, _, context) => {
+      toast.error("Failed to create exercise");
       if (context) {
         queryClient.setQueryData(["workouts"], context.previous);
       }
@@ -43,6 +45,7 @@ export default function CreateWorkoutModal() {
     },
     // TODO manually invalidate query with proper id actually, so I need to take response data
     onSuccess: () => {
+      toast.success("Workoit created");
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       close();
     },
