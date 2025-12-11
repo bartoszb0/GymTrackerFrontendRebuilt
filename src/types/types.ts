@@ -9,5 +9,5 @@ export type Exercise = {
   name: string;
   sets: number;
   reps: number;
-  weight: string;
+  weight: string | number;
 };
