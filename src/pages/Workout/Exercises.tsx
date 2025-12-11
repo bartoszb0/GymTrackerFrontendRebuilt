@@ -12,40 +12,40 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import NotFoundArray from "../../components/NotFoundArray";
 import type { Exercise } from "../../types/types";
 import api from "../../utils/api";
+import DeleteExerciseModal from "./DeleteExerciseModal";
 
 type ExercisesProps = {
-  id: number;
+  workoutId: number;
   isDeletingExercise: boolean;
   setIsDeletingExercise: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Exercises({
-  id,
+  workoutId,
   isDeletingExercise,
   setIsDeletingExercise,
 }: ExercisesProps) {
   const { data: exercises } = useSuspenseQuery<Exercise[]>({
-    queryKey: ["workout", id],
-    queryFn: () => api.get(`workouts/${id}/exercises/`).then((res) => res.data),
+    queryKey: ["workout", workoutId],
+    queryFn: () =>
+      api.get(`workouts/${workoutId}/exercises/`).then((res) => res.data),
   });
 
   const exercisesElement = exercises.map((exercise) => {
+    const isBodyWeight = exercise.weight == "0.00";
+
     return (
-      <Card
-        mb="sm"
-        mt="sm"
-        key={exercise.id}
-        onClick={() => console.log(exercise.id)}
-      >
+      <Card mb="sm" mt="sm" key={exercise.id}>
         <Flex justify="space-between" align="center">
           <Text size="20px" m="3px">
-            {exercise.name} - {exercise.sets}x{exercise.reps} -{" "}
-            {exercise.weight}
+            {exercise.name} - {exercise.sets}x{exercise.reps} -
+            {!isBodyWeight ? exercise.weight + "kg" : "Bodyweight"}
           </Text>
           {isDeletingExercise ? (
-            <Button bg="red.8" size="md">
-              Delete
-            </Button>
+            <DeleteExerciseModal
+              exerciseId={exercise.id}
+              workoutId={workoutId}
+            />
           ) : (
             <Button size="md">
               <PlayArrowIcon fontSize="large" />
