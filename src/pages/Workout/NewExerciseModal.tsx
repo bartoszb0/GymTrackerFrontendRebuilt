@@ -22,7 +22,7 @@ const schema = z.object({
   reps: z.number("Number required").min(1, "Number must be positive"),
   weight: z
     .number("Number required")
-    .min(0.01, "Number must be positive")
+    .min(0.0, "Number can't be negative")
     .optional(),
 });
 
@@ -173,7 +173,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
                   description="Leave empty for bodyweight"
                   size="lg"
                   mt="sm"
-                  min={0.01}
+                  min={0.0}
                   decimalScale={2}
                   fixedDecimalScale
                   error={errors.weight && errors.weight.message}
