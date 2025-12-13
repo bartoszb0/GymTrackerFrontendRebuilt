@@ -16,6 +16,8 @@ const schema = z.object({
     .trim(),
 });
 
+type FormFields = z.infer<typeof schema>;
+
 export default function CreateWorkoutModal() {
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -31,7 +33,10 @@ export default function CreateWorkoutModal() {
       //TODO change ownerid to the one that'll be taken from jwt
       queryClient.setQueryData<Workout[]>(
         ["workouts"],
-        [...(previous ?? []), { id: Date.now(), name: data.name, owner: 29 }]
+        [
+          ...(previous ?? []),
+          { id: Date.now(), name: data.name, owner: 29, optimistic: true },
+        ]
       );
 
       return { previous };
@@ -43,7 +48,6 @@ export default function CreateWorkoutModal() {
       }
       setError("root", error);
     },
-    // TODO manually invalidate query with proper id actually, so I need to take response data
     onSuccess: () => {
       toast.success("Workout created");
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
@@ -51,8 +55,6 @@ export default function CreateWorkoutModal() {
       close();
     },
   });
-
-  type FormFields = z.infer<typeof schema>;
 
   const {
     register,

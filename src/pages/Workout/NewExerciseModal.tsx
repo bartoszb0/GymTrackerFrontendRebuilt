@@ -46,7 +46,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
       const optimisticWeight = (() => {
         if (data.weight === undefined) {
           return "0.00";
-        }
+        } // TODO fix this lmao
         return data.weight.toFixed(2);
       })();
 
@@ -55,11 +55,12 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
         [
           ...(previous ?? []),
           {
-            id: Date.now(),
+            id: -Date.now(),
             name: data.name,
             sets: data.sets,
             reps: data.reps,
             weight: optimisticWeight,
+            optimistic: true,
           },
         ]
       );
@@ -76,8 +77,6 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
       }
       setError("root", error);
     },
-    // TODO manually invalidate query with proper id actually, so I need to take response data
-
     onSuccess: () => {
       toast.success("Exercise created");
       queryClient.invalidateQueries({ queryKey: ["workout", workoutId] });

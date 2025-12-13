@@ -35,7 +35,15 @@ export default function Exercises({
     const isBodyweight = exercise.weight == "0.00";
 
     return (
-      <Card mb="sm" mt="sm" key={exercise.id}>
+      <Card
+        mb="sm"
+        mt="sm"
+        key={exercise.id}
+        bg={exercise.optimistic ? "dark.5" : undefined}
+        style={{
+          opacity: exercise.optimistic ? 0.6 : 1,
+        }}
+      >
         <Flex justify="space-between" align="center">
           <Text size="20px" m="3px">
             {exercise.name} - {exercise.sets}x{exercise.reps} -{" "}
@@ -48,7 +56,7 @@ export default function Exercises({
               setIsDeletingExercise={setIsDeletingExercise}
             />
           ) : (
-            <Button size="md">
+            <Button size="md" loading={exercise.optimistic}>
               <PlayArrowIcon fontSize="large" />
             </Button>
           )}

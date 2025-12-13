@@ -18,7 +18,13 @@ export default function Workouts() {
         mt="sm"
         key={workout.id}
         component={Link}
-        to={`workout/${workout.id}`}
+        to={workout.optimistic ? "#" : `workout/${workout.id}`} // dummy link for optimistic
+        bg={workout.optimistic ? "dark.5" : undefined}
+        style={{
+          cursor: workout.optimistic ? "not-allowed" : "pointer",
+          pointerEvents: workout.optimistic ? "none" : "auto",
+          opacity: workout.optimistic ? 0.6 : 1,
+        }}
       >
         <Text size="35px" m="3px">
           {workout.name}
