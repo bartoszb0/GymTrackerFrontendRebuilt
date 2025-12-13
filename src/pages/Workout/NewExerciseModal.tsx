@@ -43,26 +43,18 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
         workoutId,
       ]);
 
-      const optimisticWeight = (() => {
-        if (data.weight === undefined) {
-          return "0.00";
-        } // TODO fix this lmao
-        return data.weight.toFixed(2);
-      })();
+      const optimisticExercise: Exercise = {
+        id: -Date.now(), // temporary negative ID
+        name: data.name,
+        sets: data.sets,
+        reps: data.reps,
+        weight: data.weight !== undefined ? data.weight.toFixed(2) : "0.00",
+        optimistic: true,
+      };
 
       queryClient.setQueryData<Exercise[]>(
         ["workout", workoutId],
-        [
-          ...(previous ?? []),
-          {
-            id: -Date.now(),
-            name: data.name,
-            sets: data.sets,
-            reps: data.reps,
-            weight: optimisticWeight,
-            optimistic: true,
-          },
-        ]
+        [...(previous ?? []), optimisticExercise]
       );
 
       return { previous };
