@@ -10,7 +10,7 @@ import {
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import NotFoundArray from "../../components/NotFoundArray";
-import type { Exercise } from "../../types/types";
+import type { ApiExercise, Exercise } from "../../types/types";
 import api from "../../utils/api";
 import DeleteExerciseModal from "./DeleteExerciseModal";
 
@@ -28,12 +28,15 @@ export default function Exercises({
   const { data: exercises } = useSuspenseQuery<Exercise[]>({
     queryKey: ["workout", workoutId],
     queryFn: () =>
-      api.get(`workouts/${workoutId}/exercises/`).then((res) => res.data),
+      api.get(`workouts/${workoutId}/exercises/`).then((res) =>
+        res.data.map((exercise: ApiExercise) => ({
+          ...exercise,
+          weight: parseFloat(exercise.weight), // convert to number
+        }))
+      ),
   });
 
   const exercisesElement = exercises.map((exercise) => {
-    const isBodyweight = exercise.weight == "0.00";
-
     return (
       <Card
         mb="sm"
@@ -47,7 +50,9 @@ export default function Exercises({
         <Flex justify="space-between" align="center">
           <Text size="20px" m="3px">
             {exercise.name} - {exercise.sets}x{exercise.reps} -{" "}
-            {!isBodyweight ? exercise.weight + "kg" : "Bodyweight"}
+            {exercise.weight > 0
+              ? exercise.weight.toFixed(2) + "kg"
+              : "Bodyweight"}
           </Text>
           {isDeletingExercise ? (
             <DeleteExerciseModal

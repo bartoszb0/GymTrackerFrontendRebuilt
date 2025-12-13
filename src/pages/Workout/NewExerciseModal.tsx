@@ -48,7 +48,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
         name: data.name,
         sets: data.sets,
         reps: data.reps,
-        weight: data.weight !== undefined ? data.weight.toFixed(2) : "0.00",
+        weight: data.weight ?? 0,
         optimistic: true,
       };
 
@@ -141,6 +141,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
                   size="lg"
                   mt="sm"
                   min={1}
+                  allowDecimal={false}
                   error={errors.sets && errors.sets.message}
                 />
               )}
@@ -156,6 +157,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
                   size="lg"
                   mt="sm"
                   min={1}
+                  allowDecimal={false}
                   error={errors.reps && errors.reps.message}
                 />
               )}
@@ -172,6 +174,8 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
                   size="lg"
                   mt="sm"
                   min={0.01}
+                  decimalScale={2}
+                  fixedDecimalScale
                   error={errors.weight && errors.weight.message}
                 />
               )}

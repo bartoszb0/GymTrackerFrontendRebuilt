@@ -10,8 +10,16 @@ export type Exercise = {
   name: string;
   sets: number;
   reps: number;
-  weight: string | number;
+  weight: number;
   optimistic?: boolean;
+};
+
+export type ApiExercise = {
+  id: number;
+  name: string;
+  sets: number;
+  reps: number;
+  weight: string;
 };
 
 export type ProteinInfo = {
