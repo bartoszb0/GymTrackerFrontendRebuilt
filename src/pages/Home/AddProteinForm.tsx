@@ -82,6 +82,7 @@ export default function AddProteinForm() {
                   }
                   clampBehavior="strict"
                   min={1}
+                  allowDecimal={false}
                   suffix="g"
                   disabled={isPending}
                 />
