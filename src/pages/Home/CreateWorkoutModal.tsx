@@ -35,7 +35,7 @@ export default function CreateWorkoutModal() {
         ["workouts"],
         [
           ...(previous ?? []),
-          { id: Date.now(), name: data.name, owner: 29, optimistic: true },
+          { id: -Date.now(), name: data.name, owner: 29, optimistic: true },
         ]
       );
 
