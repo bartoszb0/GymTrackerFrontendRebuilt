@@ -45,11 +45,7 @@ export default function UpdateExercise({
         workoutId,
       ]);
 
-      if (!previous) {
-        return { previous };
-      }
-
-      const updatedExercises = previous.map((oldExercise) =>
+      const updatedExercises = (previous ?? []).map((oldExercise) =>
         oldExercise.id === exercise.id
           ? {
               ...oldExercise,
