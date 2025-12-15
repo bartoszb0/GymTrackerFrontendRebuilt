@@ -59,6 +59,7 @@ export default function Exercises({
               exerciseId={exercise.id}
               workoutId={workoutId}
               setIsDeletingExercise={setIsDeletingExercise}
+              isOptimisticVariant={exercise.optimistic}
             />
           ) : (
             <Button size="md" loading={exercise.optimistic}>

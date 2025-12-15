@@ -9,12 +9,14 @@ type DeleteExerciseModalProps = {
   exerciseId: number;
   workoutId: number;
   setIsDeletingExercise: React.Dispatch<React.SetStateAction<boolean>>;
+  isOptimisticVariant?: boolean;
 };
 
 export default function DeleteExerciseModal({
   exerciseId,
   workoutId,
   setIsDeletingExercise,
+  isOptimisticVariant,
 }: DeleteExerciseModalProps) {
   const [displayConfirmation, setDisplayConfirmation] = useState(false);
   const queryClient = useQueryClient();
@@ -49,6 +51,7 @@ export default function DeleteExerciseModal({
           bg="red.7"
           size="md"
           onClick={() => setDisplayConfirmation(true)}
+          loading={isOptimisticVariant}
         >
           Delete
         </Button>
