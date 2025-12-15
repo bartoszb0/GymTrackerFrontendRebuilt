@@ -43,17 +43,24 @@ export default function Exercises({
         mt="sm"
         key={exercise.id}
         bg={exercise.optimistic ? "dark.5" : undefined}
-        style={{
-          opacity: exercise.optimistic ? 0.6 : 1,
-        }}
+        style={{ opacity: exercise.optimistic ? 0.6 : 1 }}
       >
-        <Flex justify="space-between" align="center">
-          <Text size="20px" m="3px">
+        <Flex justify="space-between" align="center" wrap="nowrap" gap="sm">
+          <Text
+            size="20px"
+            m="3px"
+            style={{
+              flex: 1,
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+            }}
+          >
             {exercise.name} - {exercise.sets}x{exercise.reps} -{" "}
             {exercise.weight > 0
               ? exercise.weight.toFixed(2) + "kg"
               : "Bodyweight"}
           </Text>
+
           {isDeletingExercise ? (
             <DeleteExerciseModal
               exerciseId={exercise.id}
@@ -62,7 +69,11 @@ export default function Exercises({
               isOptimisticVariant={exercise.optimistic}
             />
           ) : (
-            <Button size="md" loading={exercise.optimistic}>
+            <Button
+              size="md"
+              loading={exercise.optimistic}
+              style={{ flexShrink: 0 }}
+            >
               <PlayArrowIcon fontSize="large" />
             </Button>
           )}

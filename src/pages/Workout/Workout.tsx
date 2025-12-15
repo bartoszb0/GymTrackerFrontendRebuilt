@@ -30,7 +30,7 @@ export default function Workout() {
         <Button bg="dark.8" size="lg" component={Link} to="/">
           <ArrowBackIcon fontSize="large" />
         </Button>
-        <Text fw={700} size="30px">
+        <Text fw={700} size="30px" truncate="end">
           {workoutName}
         </Text>
       </Flex>

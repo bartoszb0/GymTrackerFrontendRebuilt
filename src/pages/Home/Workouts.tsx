@@ -26,7 +26,7 @@ export default function Workouts() {
           opacity: workout.optimistic ? 0.6 : 1,
         }}
       >
-        <Text size="35px" m="3px">
+        <Text size="30px" m="3px" truncate="end">
           {workout.name}
         </Text>
       </Card>
