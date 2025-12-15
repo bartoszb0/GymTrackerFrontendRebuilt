@@ -45,18 +45,20 @@ export default function UpdateExercise({
         workoutId,
       ]);
 
-      const updatedExercises = previous?.map((oldExercise) => {
-        console.log(oldExercise);
-        if (oldExercise.id === exercise.id) {
-          return {
-            ...oldExercise,
-            reps: data.reps ?? exercise.reps,
-            weight: data.weight ?? exercise.weight,
-            optimistic: true,
-          };
-        }
-        return oldExercise;
-      });
+      if (!previous) {
+        return { previous };
+      }
+
+      const updatedExercises = previous.map((oldExercise) =>
+        oldExercise.id === exercise.id
+          ? {
+              ...oldExercise,
+              reps: data.reps ?? oldExercise.reps,
+              weight: data.weight ?? oldExercise.weight,
+              optimistic: true,
+            }
+          : oldExercise
+      );
 
       queryClient.setQueryData(["workout", workoutId], updatedExercises);
       return { previous };
