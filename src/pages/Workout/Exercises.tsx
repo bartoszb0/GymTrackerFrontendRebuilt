@@ -7,12 +7,13 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import NotFoundArray from "../../components/NotFoundArray";
 import type { ApiExercise, Exercise } from "../../types/types";
 import api from "../../utils/api";
+import displayWeight from "../../utils/displayWeight";
 import DeleteExerciseModal from "./DeleteExerciseModal";
+import WorkoutMode from "./WorkoutMode";
 
 type ExercisesProps = {
   workoutId: number;
@@ -56,9 +57,7 @@ export default function Exercises({
             }}
           >
             {exercise.name} - {exercise.sets}x{exercise.reps} -{" "}
-            {exercise.weight > 0
-              ? exercise.weight.toFixed(2) + "kg"
-              : "Bodyweight"}
+            {displayWeight(exercise.weight)}
           </Text>
 
           {isDeletingExercise ? (
@@ -69,13 +68,7 @@ export default function Exercises({
               isOptimisticVariant={exercise.optimistic}
             />
           ) : (
-            <Button
-              size="md"
-              loading={exercise.optimistic}
-              style={{ flexShrink: 0 }}
-            >
-              <PlayArrowIcon fontSize="large" />
-            </Button>
+            <WorkoutMode exercise={exercise} workoutId={workoutId} />
           )}
         </Flex>
       </Card>

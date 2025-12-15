@@ -23,7 +23,7 @@ export default function DeleteExerciseModal({
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
-      api.delete(`workouts/${workoutId}/exercises/${exerciseId}/`),
+      api.delete(`workouts/${workoutId}/exercises/${exerciseId}/`), // on mutate add optimistic variant so user can't interact with the exercise no more
     onError: (error) => toast.error(error.message),
     onSuccess: () => {
       queryClient.setQueryData<Exercise[]>(["workout", workoutId], (previous) =>
