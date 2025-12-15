@@ -30,13 +30,15 @@ export default function CreateWorkoutModal() {
 
       const previous = queryClient.getQueryData<Workout[]>(["workouts"]);
 
-      //TODO change ownerid to the one that'll be taken from jwt
+      const newWorkout = {
+        id: -Date.now(),
+        name: data.name,
+        optimistic: true,
+      };
+
       queryClient.setQueryData<Workout[]>(
         ["workouts"],
-        [
-          ...(previous ?? []),
-          { id: -Date.now(), name: data.name, owner: 29, optimistic: true },
-        ]
+        [...(previous ?? []), newWorkout]
       );
 
       return { previous };
