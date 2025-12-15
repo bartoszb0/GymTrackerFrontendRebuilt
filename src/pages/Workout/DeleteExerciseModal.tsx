@@ -31,11 +31,7 @@ export default function DeleteExerciseModal({
         workoutId,
       ]);
 
-      if (!previous) {
-        return { previous };
-      }
-
-      const updatedExercises = previous.map((oldExercise) =>
+      const updatedExercises = (previous ?? []).map((oldExercise) =>
         oldExercise.id === exerciseId
           ? { ...oldExercise, optimistic: true }
           : oldExercise
