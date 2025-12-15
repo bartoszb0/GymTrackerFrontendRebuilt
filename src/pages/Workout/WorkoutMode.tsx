@@ -2,6 +2,7 @@ import { Button, Card, Flex, Modal, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useEffect, useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import type { Exercise } from "../../types/types";
 import displayWeight from "../../utils/displayWeight";
 import UpdateExercise from "./UpdateExercise";
@@ -13,8 +14,12 @@ type WorkoutModeProps = {
 
 export default function WorkoutMode({ exercise, workoutId }: WorkoutModeProps) {
   const [opened, { open, close }] = useDisclosure(false);
-  const [currentSet, setCurrentSet] = useState(0);
   const [isFinishingExercise, setIsFinishingExercise] = useState(false);
+
+  const [currentSet, setCurrentSet, removeValue] = useLocalStorage(
+    `currentSet${exercise.id}`,
+    0
+  );
 
   useEffect(() => {
     if (currentSet === exercise.sets) {
@@ -22,10 +27,10 @@ export default function WorkoutMode({ exercise, workoutId }: WorkoutModeProps) {
     }
   }, [currentSet]);
 
-  const openModal = () => {
-    setCurrentSet(0);
+  const closeModal = () => {
+    removeValue();
     setIsFinishingExercise(false);
-    open();
+    close();
   };
 
   return (
@@ -79,20 +84,22 @@ export default function WorkoutMode({ exercise, workoutId }: WorkoutModeProps) {
                 <UpdateExercise
                   exercise={exercise}
                   workoutId={workoutId}
-                  closeModal={close}
+                  closeModal={closeModal}
                 />
               ) : (
                 <Button
                   mt="lg"
                   size="xl"
                   w={200}
-                  onClick={() => setCurrentSet((prev) => prev + 1)}
+                  onClick={() =>
+                    setCurrentSet((prev) => Math.min(prev + 1, exercise.sets))
+                  }
                 >
                   Finished set
                 </Button>
               )}
 
-              <Button size="lg" bg="red.9" w={200} onClick={close}>
+              <Button size="lg" bg="red.9" w={200} onClick={closeModal}>
                 Abort workout
               </Button>
             </Flex>
@@ -104,9 +111,16 @@ export default function WorkoutMode({ exercise, workoutId }: WorkoutModeProps) {
         size="md"
         loading={exercise.optimistic}
         style={{ flexShrink: 0 }}
-        onClick={openModal}
+        onClick={open}
+        bg={currentSet ? "orange.8" : undefined}
       >
-        <PlayArrowIcon fontSize="large" />
+        {currentSet ? (
+          <Text size="lg" fw={700}>
+            {currentSet} / {exercise.sets}
+          </Text>
+        ) : (
+          <PlayArrowIcon fontSize="large" />
+        )}
       </Button>
     </>
   );
