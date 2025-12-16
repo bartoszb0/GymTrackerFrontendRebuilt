@@ -1,11 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Card, Flex, NumberInput } from "@mantine/core";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
 import { z } from "zod";
-import type { ProteinInfo } from "../../types/types";
-import api from "../../utils/api";
+import useAddProtein from "../../hooks/mutations/useAddProtein";
 
 const schema = z.object({
   protein_to_add: z
@@ -25,42 +22,18 @@ export default function AddProteinForm() {
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
   });
-  const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormFields) => api.patch("protein/", data),
-
-    onMutate: async (data) => {
-      await queryClient.cancelQueries({ queryKey: ["protein"] });
-
-      const previous = queryClient.getQueryData<ProteinInfo>(["protein"]);
-
-      queryClient.setQueryData(["protein"], {
-        ...previous,
-        todays_protein:
-          (previous ? previous.todays_protein : 0) + data.protein_to_add,
-      });
-
-      return { previous };
-    },
-
-    onError: (error, _, context) => {
-      toast.error("Failed to add protein");
-      if (context) {
-        queryClient.setQueryData(["protein"], context.previous);
-      }
-      setError("root", error);
-    },
-
-    onSuccess: () => {
-      toast.success("Protein added");
-      queryClient.invalidateQueries({ queryKey: ["protein"] });
-      reset(); // TODO make this sh work
-    },
-  });
+  const { mutate, isPending } = useAddProtein();
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    mutate(data);
+    mutate(data, {
+      onSuccess: () => {
+        reset(); // TODO make this sh work
+      },
+      onError: (error) => {
+        setError("root", error);
+      },
+    });
   };
 
   return (
