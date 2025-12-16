@@ -8,7 +8,7 @@ import ProteinEditModal from "./ProteinEditModal";
 
 export default function ProteinSection() {
   const { data: proteinInfo } = useSuspenseQuery<ProteinInfo>({
-    queryKey: ["protein"], // add here user id as well in future (?)
+    queryKey: ["protein"],
     queryFn: () => api.get("protein/").then((res) => res.data),
   });
 
