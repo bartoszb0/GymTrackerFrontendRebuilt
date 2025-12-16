@@ -36,10 +36,7 @@ export default function CreateWorkoutModal() {
         optimistic: true,
       };
 
-      queryClient.setQueryData<Workout[]>(
-        ["workouts"],
-        [...(previous ?? []), newWorkout]
-      );
+      queryClient.setQueryData(["workouts"], [...(previous ?? []), newWorkout]);
 
       return { previous };
     },

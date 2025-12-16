@@ -52,7 +52,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
         optimistic: true,
       };
 
-      queryClient.setQueryData<Exercise[]>(
+      queryClient.setQueryData(
         ["workout", workoutId],
         [...(previous ?? []), optimisticExercise]
       );
@@ -62,10 +62,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
     onError: (error, _, context) => {
       toast.error("Failed to create exercise");
       if (context) {
-        queryClient.setQueryData<Exercise[]>(
-          ["workout", workoutId],
-          context.previous
-        );
+        queryClient.setQueryData(["workout", workoutId], context.previous);
       }
       setError("root", error);
     },

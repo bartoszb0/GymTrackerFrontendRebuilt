@@ -20,7 +20,6 @@ export default function DeleteWorkoutModal({
     mutationFn: () => api.delete(`workouts/${workoutId}/`),
     onError: (error) => toast.error(error.message),
     onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
       await queryClient.refetchQueries({ queryKey: ["workouts"] });
       navigate("/");
       toast.success("Workout deleted");
