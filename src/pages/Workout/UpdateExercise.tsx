@@ -76,7 +76,7 @@ export default function UpdateExercise({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
     if (data.reps != undefined || data.weight != undefined) {
       mutate(data);
     } else {

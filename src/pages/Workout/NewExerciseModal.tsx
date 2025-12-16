@@ -86,7 +86,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
     mutate(data);
   };
 

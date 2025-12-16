@@ -66,7 +66,7 @@ export default function CreateWorkoutModal() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
     mutate(data);
   };
 
