@@ -1,11 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, Flex, NumberInput } from "@mantine/core";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import useUpdateExercise from "../../hooks/mutations/useUpdateExercise";
 import type { Exercise } from "../../types/types";
-import api from "../../utils/api";
 
 type UpdateExerciseProps = {
   exercise: Exercise;
@@ -31,46 +30,7 @@ export default function UpdateExercise({
   workoutId,
   closeModal,
 }: UpdateExerciseProps) {
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormFields) =>
-      api
-        .patch(`/workouts/${workoutId}/exercises/${exercise.id}/`, data)
-        .then((res) => res.data),
-    onMutate: async (data) => {
-      await queryClient.cancelQueries({ queryKey: ["workout", workoutId] });
-      const previous = queryClient.getQueryData<Exercise[]>([
-        "workout",
-        workoutId,
-      ]);
-
-      const updatedExercises = (previous ?? []).map((oldExercise) =>
-        oldExercise.id === exercise.id
-          ? {
-              ...oldExercise,
-              reps: data.reps ?? oldExercise.reps,
-              weight: data.weight ?? oldExercise.weight,
-              optimistic: true,
-            }
-          : oldExercise
-      );
-
-      queryClient.setQueryData(["workout", workoutId], updatedExercises);
-      return { previous };
-    },
-    onError: (error, _, context) => {
-      if (context) {
-        queryClient.setQueryData(["workout", workoutId], context.previous);
-      }
-      toast.error(error.message);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["workout", workoutId] });
-      toast.success("Changes saved");
-      closeModal();
-    },
-  });
+  const { mutate, isPending } = useUpdateExercise(workoutId, exercise);
 
   const { control, handleSubmit } = useForm<FormFields>({
     resolver: zodResolver(schema),
@@ -78,7 +38,14 @@ export default function UpdateExercise({
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     if (data.reps != undefined || data.weight != undefined) {
-      mutate(data);
+      mutate(data, {
+        onSuccess: () => {
+          closeModal();
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      });
     } else {
       closeModal();
     }
