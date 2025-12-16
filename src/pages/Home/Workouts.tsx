@@ -1,15 +1,10 @@
 import { Card, ScrollArea, SimpleGrid, Text } from "@mantine/core";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import NotFoundArray from "../../components/NotFoundArray";
-import type { Workout } from "../../types/types";
-import api from "../../utils/api";
+import useWorkouts from "../../hooks/queries/useWorkouts";
 
 export default function Workouts() {
-  const { data: workouts } = useSuspenseQuery<Workout[]>({
-    queryKey: ["workouts"],
-    queryFn: () => api.get("workouts/").then((res) => res.data),
-  });
+  const { data: workouts } = useWorkouts();
 
   const workoutsElement = workouts.map((workout) => {
     return (

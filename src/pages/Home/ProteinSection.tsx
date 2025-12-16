@@ -1,16 +1,11 @@
 import { Box, Flex, RingProgress, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import type { ProteinInfo } from "../../types/types";
-import api from "../../utils/api";
+import useProtein from "../../hooks/queries/useProtein";
 import getPercent from "../../utils/getPercent";
 import ProteinEditModal from "./ProteinEditModal";
 
 export default function ProteinSection() {
-  const { data: proteinInfo } = useSuspenseQuery<ProteinInfo>({
-    queryKey: ["protein"],
-    queryFn: () => api.get("protein/").then((res) => res.data),
-  });
+  const { data: proteinInfo } = useProtein();
 
   const percent = getPercent(
     proteinInfo.todays_protein,
