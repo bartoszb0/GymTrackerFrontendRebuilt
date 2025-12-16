@@ -1,12 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
 import { z } from "zod";
-import type { Workout } from "../../types/types";
-import api from "../../utils/api";
+import useCreateWorkout from "../../hooks/mutations/useCreateWorkout";
 
 const schema = z.object({
   name: z
@@ -21,39 +18,7 @@ type FormFields = z.infer<typeof schema>;
 export default function CreateWorkoutModal() {
   const [opened, { open, close }] = useDisclosure(false);
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormFields) => api.post("workouts/", data),
-    onMutate: async (data) => {
-      await queryClient.cancelQueries({ queryKey: ["workouts"] });
-
-      const previous = queryClient.getQueryData<Workout[]>(["workouts"]);
-
-      const newWorkout = {
-        id: -Date.now(),
-        name: data.name,
-        optimistic: true,
-      };
-
-      queryClient.setQueryData(["workouts"], [...(previous ?? []), newWorkout]);
-
-      return { previous };
-    },
-    onError: (error, _, context) => {
-      toast.error("Failed to create exercise");
-      if (context) {
-        queryClient.setQueryData(["workouts"], context.previous);
-      }
-      setError("root", error);
-    },
-    onSuccess: () => {
-      toast.success("Workout created");
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
-      reset(); // crucial for avoiding rapidly clicking to create bunch of same workout
-      close();
-    },
-  });
+  const { mutate, isPending } = useCreateWorkout();
 
   const {
     register,
@@ -67,7 +32,15 @@ export default function CreateWorkoutModal() {
   });
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    mutate(data);
+    mutate(data, {
+      onSuccess: () => {
+        reset();
+        close();
+      },
+      onError: (error) => {
+        setError("root", error);
+      },
+    });
   };
 
   const openModal = () => {
