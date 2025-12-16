@@ -1,9 +1,7 @@
 import { Button, Flex, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import api from "../../utils/api";
+import useDeleteWorkout from "../../hooks/mutations/useDeleteWorkout";
 
 type DeleteWorkoutModalProps = {
   workoutId: number;
@@ -14,22 +12,19 @@ export default function DeleteWorkoutModal({
 }: DeleteWorkoutModalProps) {
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
-  const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: () => api.delete(`workouts/${workoutId}/`),
-    onError: (error) => toast.error(error.message),
-    onSuccess: async () => {
-      await queryClient.refetchQueries({ queryKey: ["workouts"] });
-      navigate("/");
-      toast.success("Workout deleted");
-    },
-  });
+  const { mutate, isPending } = useDeleteWorkout();
 
   const closeModal = () => {
     if (!isPending) {
       close();
     }
+  };
+
+  const mutateAndNavigate = () => {
+    mutate(workoutId, {
+      onSuccess: () => navigate("/"),
+    });
   };
 
   return (
@@ -48,7 +43,7 @@ export default function DeleteWorkoutModal({
             size="xl"
             w={150}
             bg="red.9"
-            onClick={() => mutate()}
+            onClick={mutateAndNavigate}
             loading={isPending}
           >
             Delete
