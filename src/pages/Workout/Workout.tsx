@@ -1,10 +1,9 @@
 import { Button, Flex, Stack, Text } from "@mantine/core";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import DataContentWrapper from "../../components/DataContentWrapper";
-import type { Workout } from "../../types/types";
+import getWorkoutName from "../../utils/getWorkoutName";
 import isIdValid from "../../utils/isIdValid";
 import NotFound from "../NotFound";
 import DeleteWorkoutModal from "./DeleteWorkoutModal";
@@ -17,11 +16,6 @@ export default function Workout() {
 
   if (!isValid) return <NotFound />;
 
-  const queryClient = useQueryClient();
-  const workouts = queryClient.getQueryData<Workout[]>(["workouts"]);
-  const workoutFromCache = workouts?.find((w) => w.id === safeId);
-  const workoutName = workoutFromCache?.name || "Workout";
-
   const [isDeletingExercise, setIsDeletingExercise] = useState(false);
 
   return (
@@ -31,7 +25,7 @@ export default function Workout() {
           <ArrowBackIcon fontSize="large" />
         </Button>
         <Text fw={700} size="30px" truncate="end">
-          {workoutName}
+          {getWorkoutName(safeId)}
         </Text>
       </Flex>
       <DataContentWrapper>
