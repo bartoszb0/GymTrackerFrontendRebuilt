@@ -1,12 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Modal, NumberInput, Text, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
 import { z } from "zod";
-import type { Exercise } from "../../types/types";
-import api from "../../utils/api";
+import useCreateExercise from "../../hooks/mutations/useCreateExercise";
 
 type NewExerciseModalProps = {
   workoutId: number;
@@ -30,49 +27,7 @@ type FormFields = z.infer<typeof schema>;
 
 export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormFields) =>
-      api.post(`workouts/${workoutId}/exercises/`, data),
-    onMutate: async (data) => {
-      await queryClient.cancelQueries({ queryKey: ["workout", workoutId] });
-
-      const previous = queryClient.getQueryData<Exercise[]>([
-        "workout",
-        workoutId,
-      ]);
-
-      const optimisticExercise: Exercise = {
-        id: -Date.now(), // temporary negative ID
-        name: data.name,
-        sets: data.sets,
-        reps: data.reps,
-        weight: data.weight ?? 0,
-        optimistic: true,
-      };
-
-      queryClient.setQueryData(
-        ["workout", workoutId],
-        [...(previous ?? []), optimisticExercise]
-      );
-
-      return { previous };
-    },
-    onError: (error, _, context) => {
-      toast.error("Failed to create exercise");
-      if (context) {
-        queryClient.setQueryData(["workout", workoutId], context.previous);
-      }
-      setError("root", error);
-    },
-    onSuccess: () => {
-      toast.success("Exercise created");
-      queryClient.invalidateQueries({ queryKey: ["workout", workoutId] });
-      reset(); // crucial for avoiding rapidly clicking to create bunch of same exercise
-      close();
-    },
-  });
+  const { mutate, isPending } = useCreateExercise(workoutId);
 
   const {
     control,
@@ -87,7 +42,15 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
   });
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    mutate(data);
+    mutate(data, {
+      onSuccess: () => {
+        reset(); // crucial for avoiding rapidly clicking to create bunch of same exercise
+        close();
+      },
+      onError: (error) => {
+        setError("root", error);
+      },
+    });
   };
 
   const closeModal = () => {
