@@ -7,10 +7,8 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import NotFoundArray from "../../components/NotFoundArray";
-import type { ApiExercise, Exercise } from "../../types/types";
-import api from "../../utils/api";
+import useWorkoutExercises from "../../hooks/queries/useWorkoutExercises";
 import displayWeight from "../../utils/displayWeight";
 import DeleteExerciseModal from "./DeleteExerciseModal";
 import WorkoutMode from "./WorkoutMode";
@@ -26,16 +24,7 @@ export default function Exercises({
   isDeletingExercise,
   setIsDeletingExercise,
 }: ExercisesProps) {
-  const { data: exercises } = useSuspenseQuery<Exercise[]>({
-    queryKey: ["workout", workoutId],
-    queryFn: () =>
-      api.get(`workouts/${workoutId}/exercises/`).then((res) =>
-        res.data.map((exercise: ApiExercise) => ({
-          ...exercise,
-          weight: parseFloat(exercise.weight), // convert to number
-        }))
-      ),
-  });
+  const { data: exercises } = useWorkoutExercises(workoutId);
 
   const exercisesElement = exercises.map((exercise) => {
     return (
