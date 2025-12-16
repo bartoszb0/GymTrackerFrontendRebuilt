@@ -59,7 +59,7 @@ export default function AddProteinForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
     mutate(data);
   };
 
