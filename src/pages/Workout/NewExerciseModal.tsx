@@ -67,12 +67,7 @@ export default function NewExerciseModal({ workoutId }: NewExerciseModalProps) {
 
   return (
     <>
-      <Modal
-        opened={opened}
-        onClose={closeModal}
-        yOffset="20vh"
-        withCloseButton={false}
-      >
+      <Modal opened={opened} onClose={closeModal} withCloseButton={false}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <fieldset
             disabled={isPending}
