@@ -59,7 +59,7 @@ export default function DeleteWorkoutModal({
           </Button>
         </Flex>
       </Modal>
-      <Button size="xl" onClick={open}>
+      <Button size="xl" onClick={open} bg="red.9">
         Delete workout
       </Button>
     </>

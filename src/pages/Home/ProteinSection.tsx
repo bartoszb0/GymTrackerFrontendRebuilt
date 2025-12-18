@@ -33,8 +33,8 @@ export default function ProteinSection() {
           margin: "auto",
         }}
         bdrs="md"
-        bg="dark.6"
         onClick={() => open()}
+        className="proteinBox"
       >
         <Flex justify="space-between">
           <Flex m="sm" justify="center" direction="column" gap="md">

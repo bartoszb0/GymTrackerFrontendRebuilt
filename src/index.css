@@ -1,0 +1,38 @@
+/* Protein Box */
+.proteinBox {
+  background-color: var(--mantine-color-dark-6);
+  cursor: pointer;
+  transition: background-color 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.proteinBox:hover {
+  background-color: var(--mantine-color-dark-5);
+}
+
+.proteinBox:active {
+  background-color: var(--mantine-color-dark-7);
+  transform: scale(0.98);
+}
+
+/* Workout Card */
+.workoutCard {
+  background-color: var(--mantine-color-dark-6);
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.workoutCard:hover {
+  background-color: var(--mantine-color-dark-5);
+}
+
+.workoutCard:active {
+  background-color: var(--mantine-color-dark-7);
+  transform: scale(0.98);
+}
+
+.workoutCard.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.6;
+}

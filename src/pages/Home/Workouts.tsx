@@ -14,12 +14,7 @@ export default function Workouts() {
         key={workout.id}
         component={Link}
         to={workout.optimistic ? "#" : `workout/${workout.id}`} // dummy link for optimistic
-        bg={workout.optimistic ? "dark.5" : undefined}
-        style={{
-          cursor: workout.optimistic ? "not-allowed" : "pointer",
-          pointerEvents: workout.optimistic ? "none" : "auto",
-          opacity: workout.optimistic ? 0.6 : 1,
-        }}
+        className={`workoutCard ${workout.optimistic ? "disabled" : ""}`}
       >
         <Text size="30px" m="3px" truncate="end">
           {workout.name}

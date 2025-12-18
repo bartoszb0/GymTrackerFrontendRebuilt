@@ -24,6 +24,7 @@ export default function ProteinEditModal({
       closeButtonProps={{
         size: "50",
       }}
+      transitionProps={{ transition: "fade", duration: 200 }}
     >
       <Stack align="center">
         <RingProgress
