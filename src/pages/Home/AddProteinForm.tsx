@@ -6,11 +6,11 @@ import useAddProtein from "../../hooks/mutations/useAddProtein";
 
 const schema = z.object({
   protein_to_add: z
-    .number("Number is required")
-    .min(1, "At least 1 gram is required"),
+    .union([z.literal(""), z.number().min(1, "At least 1 gram is required")])
+    .refine((val) => val !== "", "Number is required"),
 });
 
-type FormFields = z.infer<typeof schema>;
+type FormFields = { protein_to_add: number | "" };
 
 export default function AddProteinForm() {
   const {
@@ -21,14 +21,15 @@ export default function AddProteinForm() {
     setError,
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
+    defaultValues: { protein_to_add: "" },
   });
 
   const { mutate, isPending } = useAddProtein();
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    mutate(data, {
+    mutate(data as { protein_to_add: number }, {
       onSuccess: () => {
-        reset(); // TODO make this sh work
+        reset();
       },
       onError: (error) => {
         setError("root", error);

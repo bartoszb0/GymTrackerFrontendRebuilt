@@ -6,9 +6,14 @@ import useChangeProteinGoal from "../../hooks/mutations/useChangeProteinGoal";
 
 const schema = z.object({
   protein_goal: z
-    .number("Number is required")
-    .min(1, "Goal must be at least 1 gram")
-    .max(500, "Goal can't exceed 500 grams"),
+    .union([
+      z.literal(""),
+      z
+        .number("Number is required")
+        .min(1, "Goal must be at least 1 gram")
+        .max(500, "Goal can't exceed 500 grams"),
+    ])
+    .refine((val) => val !== "", "Number is required"),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -22,14 +27,17 @@ export default function ChangeProteinGoalForm() {
     setError,
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      protein_goal: "",
+    },
   });
 
   const { mutate, isPending } = useChangeProteinGoal();
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    mutate(data, {
+    mutate(data as { protein_goal: number }, {
       onSuccess: () => {
-        reset(); // TODO make this sh work
+        reset();
       },
       onError: (error) => {
         setError("root", error);
