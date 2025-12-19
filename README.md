@@ -1,73 +1,65 @@
-# React + TypeScript + Vite
+# GymTracker - Tool for tracking gym progress
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This app is designed primarily for mobile use, allowing users to manage and track their fitness progress directly during workouts. Users can create workouts, including exercises, sets, reps, and weights used. The app provides a “Workout Mode,” allowing users to move through each exercise set by set and update their current weights. Additionally, the app includes a daily protein tracking feature, enabling users to record their intake and monitor progress toward personalized protein goals. 
 
-Currently, two official plugins are available:
+[Backend Repository](https://github.com/bartoszb0/GymTrackerBackend)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> Author: Bartosz Bednarczyk  
+>  Email: bartoszb2020@gmail.com
 
-## React Compiler
+## Video
+https://github.com/user-attachments/assets/f598fbc8-49c4-4426-8002-044848cbaf7e
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Demo
 
-## Expanding the ESLint configuration
+https://gymtracker-m6d3.onrender.com/
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Key Application Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* **Workouts and Exercises:** Create custom workouts and attach exercises to them, storing everything in one place.
+* **Workout Mode:** Move through exercises set by set, updating weights as you progress.
+* **Workout Continuity:** Never lose your place — progress persists across page refreshes or navigation.
+* **Protein Tracker:** Set a daily protein goal and log intake, with daily resets.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+> Use Case:
+> 1. User creates a new workout.
+> 2. Adds exercises to the workout.
+> 3. Starts **Workout Mode** at the gym.
+> 4. Tracks each set and updates weights as needed.
+> 5. If the page reloads, **Workout Continuity** allows the user to resume exactly where they left off.
+> 6. User updates current protein intake.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Technologies and libraries used
+- **React + TypeScript:** core for building type-safe user interfaces
+- **Mantine:** component library for building accessible, responsive, and well-styled UI with minimal overhead
+- **React Router:** for declarative routing within the single-page application
+- **React Hook Form:** performant form state management with minimal re-renders
+- **Zod:** schema-based validation and type-safe form validation
+- **Tanstack Query:** server-state management for efficient data fetching, caching, and synchronization
+- **Axios:** API communication
+- **Prettier:** code formatting and consistency
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Deployment
+- **Render:** hosting for frontend, backend and database
+
+
+## Screenshots
+<table>
+  <tr>
+    <td align="center">
+      <strong>Home / Dashboard</strong><br>
+      <img width="250" alt="home" src="https://github.com/user-attachments/assets/bfadcde3-3374-4590-8725-75e7d71bb324" />
+    </td>
+    <td align="center">
+      <strong>Exercise List</strong><br>
+      <img width="250" alt="exercises" src="https://github.com/user-attachments/assets/18d9019c-5713-4798-b970-aa9f45288672" />
+    </td>
+    <td align="center">
+      <strong>Workout Mode</strong><br>
+      <img width="250" alt="workout_mode" src="https://github.com/user-attachments/assets/4ba03f5e-0551-4d9f-813c-41773d5c5a22" />
+    </td>
+  </tr>
+</table>
+
